@@ -1,10 +1,10 @@
-import type { Metadata } from 'next';
-import './globals.css';
+import type { Metadata } from "next";
+import "./globals.css";
 
 export const metadata: Metadata = {
-  title: 'Minimal Doc v1',
+  title: "Minimal Doc v1",
   description:
-    'Next.js 15とTailwind CSS v4で構築されたシンプルなドキュメントサイト',
+    "Next.js 15とTailwind CSS v4で構築されたシンプルなドキュメントサイト",
 };
 
 export default function RootLayout({
@@ -18,4 +18,3 @@ export default function RootLayout({
     </html>
   );
 }
-
