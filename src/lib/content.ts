@@ -1,6 +1,6 @@
 import fs from "fs";
 import path from "path";
-import { DocumentPage } from "@/types";
+import { DocumentPage, NavigationItem } from "@/types";
 import { processMarkdownToDocumentPage } from "./markdown";
 
 const DOCS_DIRECTORY = path.join(process.cwd(), "docs");
@@ -14,7 +14,7 @@ export function getDocsDirectory(): string {
 }
 
 export function getAllMarkdownFiles(
-  directory: string = getDocsDirectory()
+  directory: string = getDocsDirectory(),
 ): string[] {
   if (!fs.existsSync(directory)) {
     return [];
@@ -44,7 +44,7 @@ export function getAllMarkdownFiles(
 
 export function getMarkdownContent(
   filePath: string,
-  directory: string = getDocsDirectory()
+  directory: string = getDocsDirectory(),
 ): string {
   const fullPath = path.join(directory, filePath);
 
@@ -72,7 +72,7 @@ export async function getAllDocumentPages(): Promise<DocumentPage[]> {
     try {
       const content = getMarkdownContent(filePath, directory);
       const slug = getSlugFromFilePath(filePath);
-      const page = await processMarkdownToDocumentPage(content, slug);
+      const page = await processMarkdownToDocumentPage(content, slug, filePath);
       pages.push(page);
     } catch (error) {
       console.warn(`Failed to process ${filePath}:`, error);
@@ -91,19 +91,19 @@ export async function getAllDocumentPages(): Promise<DocumentPage[]> {
 }
 
 export async function getDocumentPageBySlug(
-  slug: string
+  slug: string,
 ): Promise<DocumentPage | null> {
   const directory = getDocsDirectory();
   const markdownFiles = getAllMarkdownFiles(directory);
 
   // Try to find exact match first
   const exactMatch = markdownFiles.find(
-    (file) => getSlugFromFilePath(file) === slug
+    (file) => getSlugFromFilePath(file) === slug,
   );
   if (exactMatch) {
     try {
       const content = getMarkdownContent(exactMatch, directory);
-      return await processMarkdownToDocumentPage(content, slug);
+      return await processMarkdownToDocumentPage(content, slug, exactMatch);
     } catch (error) {
       console.warn(`Failed to process ${exactMatch}:`, error);
     }
@@ -118,7 +118,7 @@ export async function getDocumentPageBySlug(
   if (filenameMatch) {
     try {
       const content = getMarkdownContent(filenameMatch, directory);
-      return await processMarkdownToDocumentPage(content, slug);
+      return await processMarkdownToDocumentPage(content, slug, filenameMatch);
     } catch (error) {
       console.warn(`Failed to process ${filenameMatch}:`, error);
     }
@@ -128,9 +128,77 @@ export async function getDocumentPageBySlug(
 }
 
 export function getDocumentsByCategory(
-  category: string
+  category: string,
 ): Promise<DocumentPage[]> {
   return getAllDocumentPages().then((pages) =>
-    pages.filter((page) => page.category === category)
+    pages.filter((page) => page.category === category),
   );
+}
+
+export async function generateNavigationFromFiles(): Promise<NavigationItem[]> {
+  const pages = await getAllDocumentPages();
+  const navigationMap = new Map<string, NavigationItem>();
+
+  for (const page of pages) {
+    if (!page.filePath) continue;
+
+    const pathSegments = page.filePath.split("/").filter(Boolean);
+    let currentPath = "";
+
+    for (let i = 0; i < pathSegments.length; i++) {
+      const segment = pathSegments[i];
+      const isLastSegment = i === pathSegments.length - 1;
+      const segmentPath = currentPath ? `${currentPath}/${segment}` : segment;
+
+      if (isLastSegment && segment.endsWith(".md")) {
+        const navItem: NavigationItem = {
+          title: page.title,
+          href: `/docs/${page.slug}`,
+          description: page.description,
+          order: page.order || 999,
+        };
+        navigationMap.set(segmentPath, navItem);
+      } else if (!isLastSegment) {
+        if (!navigationMap.has(segmentPath)) {
+          const folderNavItem: NavigationItem = {
+            title: segment.charAt(0).toUpperCase() + segment.slice(1),
+            href: "",
+            order: 999,
+            children: [],
+          };
+          navigationMap.set(segmentPath, folderNavItem);
+        }
+      }
+
+      currentPath = segmentPath;
+    }
+  }
+
+  const buildHierarchy = (parentPath = ""): NavigationItem[] => {
+    const items: NavigationItem[] = [];
+
+    for (const [path, item] of navigationMap.entries()) {
+      const pathSegments = path.split("/");
+      const expectedParentPath = pathSegments.slice(0, -1).join("/");
+
+      if (expectedParentPath === parentPath) {
+        const itemCopy = { ...item };
+        if (item.children !== undefined) {
+          itemCopy.children = buildHierarchy(path);
+        }
+        items.push(itemCopy);
+      }
+    }
+
+    return items.sort((a, b) => {
+      const orderA = a.order || 999;
+      const orderB = b.order || 999;
+      if (orderA !== orderB) {
+        return orderA - orderB;
+      }
+      return a.title.localeCompare(b.title);
+    });
+  };
+
+  return buildHierarchy();
 }

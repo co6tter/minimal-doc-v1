@@ -1,5 +1,5 @@
 import { SiteConfig } from "@/types";
-import { siteConfig } from "@/site.config";
+import { siteConfig } from "@/config/site.config";
 
 export function getSiteConfig(): SiteConfig {
   return siteConfig;
@@ -23,10 +23,7 @@ function isValidNavigationItem(item: unknown): boolean {
 }
 
 function isValidNavigation(navigation: unknown): boolean {
-  return (
-    Array.isArray(navigation) &&
-    navigation.every(isValidNavigationItem)
-  );
+  return Array.isArray(navigation) && navigation.every(isValidNavigationItem);
 }
 
 export function validateSiteConfig(config: unknown): config is SiteConfig {
