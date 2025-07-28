@@ -4,6 +4,7 @@ description: Minimal Doc v1の概要と基本的な使い方
 slug: getting-started
 category: guide
 date: 2025-01-24
+order: 1
 ---
 
 # はじめに
@@ -31,11 +32,13 @@ Minimal Doc v1へようこそ！このドキュメントサイトは、Next.js 1
 ## 始め方
 
 1. 依存関係をインストール:
+
    ```bash
    npm install
    ```
 
 2. 開発サーバーを起動:
+
    ```bash
    npm run dev
    ```

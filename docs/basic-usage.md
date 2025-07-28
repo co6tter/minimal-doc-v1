@@ -4,6 +4,7 @@ description: Minimal Doc v1の基本的な使い方と機能について
 slug: basic-usage
 category: guide
 date: 2025-01-24
+order: 2
 ---
 
 # 基本的な使い方
@@ -53,7 +54,7 @@ date: 2025-01-24
 
 \`\`\`javascript
 function hello() {
-  console.log('Hello, World!');
+console.log('Hello, World!');
 }
 \`\`\`
 ```
@@ -80,8 +81,8 @@ interface User {
 
 const user: User = {
   id: 1,
-  name: 'John Doe',
-  email: 'john@example.com'
+  name: "John Doe",
+  email: "john@example.com",
 };
 ```
 

@@ -35,6 +35,7 @@ export async function parseMarkdown(markdown: string): Promise<DocContent> {
     date: data.date,
     slug: data.slug || "",
     category: data.category,
+    order: data.order,
   };
 
   return {
@@ -52,7 +53,7 @@ export function calculateReadingTime(content: string): number {
 
 export function extractExcerpt(
   content: string,
-  maxLength: number = 160
+  maxLength: number = 160,
 ): string {
   const textOnly = content.replace(/<[^>]*>/g, "").replace(/\n/g, " ");
   if (textOnly.length <= maxLength) {
@@ -63,7 +64,8 @@ export function extractExcerpt(
 
 export async function processMarkdownToDocumentPage(
   markdown: string,
-  slug: string
+  slug: string,
+  filePath?: string,
 ): Promise<DocumentPage> {
   const { data, content } = matter(markdown);
 
@@ -94,5 +96,7 @@ export async function processMarkdownToDocumentPage(
     date: data.date,
     excerpt: data.excerpt || extractExcerpt(htmlContent),
     readingTime: calculateReadingTime(content),
+    order: data.order,
+    filePath,
   };
 }

@@ -4,6 +4,7 @@ export interface DocMeta {
   date?: string;
   slug: string;
   category?: string;
+  order?: number;
 }
 
 export interface DocContent {
@@ -48,6 +49,8 @@ export interface NavigationItem {
   href: string;
   description?: string;
   external?: boolean;
+  order?: number;
+  children?: NavigationItem[];
 }
 
 export interface DocumentPage {
@@ -59,4 +62,6 @@ export interface DocumentPage {
   date?: string;
   excerpt?: string;
   readingTime?: number;
+  order?: number;
+  filePath?: string;
 }

@@ -4,6 +4,7 @@ description: Minimal Doc v1のAPI リファレンス
 slug: api-reference
 category: api
 date: 2025-01-24
+order: 3
 ---
 
 # API リファレンス
@@ -17,13 +18,14 @@ date: 2025-01-24
 すべてのドキュメントページを取得します。
 
 ```typescript
-import { getAllDocumentPages } from '@/lib/content';
+import { getAllDocumentPages } from "@/lib/content";
 
 const pages = await getAllDocumentPages();
 // Returns: DocumentPage[]
 ```
 
 **戻り値**:
+
 - `DocumentPage[]`: ドキュメントページの配列
 
 ### `getDocumentPageBySlug(slug: string)`
@@ -31,16 +33,18 @@ const pages = await getAllDocumentPages();
 指定されたスラッグのドキュメントページを取得します。
 
 ```typescript
-import { getDocumentPageBySlug } from '@/lib/content';
+import { getDocumentPageBySlug } from "@/lib/content";
 
-const page = await getDocumentPageBySlug('getting-started');
+const page = await getDocumentPageBySlug("getting-started");
 // Returns: DocumentPage | null
 ```
 
 **パラメータ**:
+
 - `slug`: ドキュメントのスラッグ
 
 **戻り値**:
+
 - `DocumentPage | null`: 見つかった場合はページオブジェクト、見つからない場合はnull
 
 ### `getDocumentsByCategory(category: string)`
@@ -48,9 +52,9 @@ const page = await getDocumentPageBySlug('getting-started');
 指定されたカテゴリーのドキュメントページを取得します。
 
 ```typescript
-import { getDocumentsByCategory } from '@/lib/content';
+import { getDocumentsByCategory } from "@/lib/content";
 
-const guidePages = await getDocumentsByCategory('guide');
+const guidePages = await getDocumentsByCategory("guide");
 // Returns: DocumentPage[]
 ```
 
@@ -61,7 +65,7 @@ const guidePages = await getDocumentsByCategory('guide');
 マークダウンテキストをHTMLに変換します。
 
 ```typescript
-import { parseMarkdown } from '@/lib/markdown';
+import { parseMarkdown } from "@/lib/markdown";
 
 const result = await parseMarkdown(markdownContent);
 // Returns: DocContent
@@ -72,9 +76,9 @@ const result = await parseMarkdown(markdownContent);
 マークダウンをDocumentPageオブジェクトに変換します。
 
 ```typescript
-import { processMarkdownToDocumentPage } from '@/lib/markdown';
+import { processMarkdownToDocumentPage } from "@/lib/markdown";
 
-const page = await processMarkdownToDocumentPage(content, 'my-page');
+const page = await processMarkdownToDocumentPage(content, "my-page");
 // Returns: DocumentPage
 ```
 
@@ -85,7 +89,7 @@ const page = await processMarkdownToDocumentPage(content, 'my-page');
 サイト設定を取得します。
 
 ```typescript
-import { getSiteConfig } from '@/lib/config';
+import { getSiteConfig } from "@/lib/config";
 
 const config = getSiteConfig();
 // Returns: SiteConfig
@@ -96,7 +100,7 @@ const config = getSiteConfig();
 設定オブジェクトの妥当性を検証します。
 
 ```typescript
-import { validateSiteConfig } from '@/lib/config';
+import { validateSiteConfig } from "@/lib/config";
 
 const isValid = validateSiteConfig(configObject);
 // Returns: boolean
@@ -164,7 +168,7 @@ interface NavigationItem {
 コンテンツの読了時間を計算します。
 
 ```typescript
-import { calculateReadingTime } from '@/lib/markdown';
+import { calculateReadingTime } from "@/lib/markdown";
 
 const time = calculateReadingTime(content);
 // Returns: number (minutes)
@@ -175,7 +179,7 @@ const time = calculateReadingTime(content);
 コンテンツから抜粋を抽出します。
 
 ```typescript
-import { extractExcerpt } from '@/lib/markdown';
+import { extractExcerpt } from "@/lib/markdown";
 
 const excerpt = extractExcerpt(content, 200);
 // Returns: string
@@ -186,8 +190,8 @@ const excerpt = extractExcerpt(content, 200);
 クラス名を結合するユーティリティ関数です。
 
 ```typescript
-import { cn } from '@/lib/utils';
+import { cn } from "@/lib/utils";
 
-const className = cn('base-class', condition && 'conditional-class');
+const className = cn("base-class", condition && "conditional-class");
 // Returns: string
 ```
